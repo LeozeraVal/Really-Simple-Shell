@@ -5,10 +5,11 @@
 #include <sys/wait.h>
 
 #define MAX 256
+#define MAX_ARGS 50
 
 int main() {
   char comando[MAX];
-  char* comandos[50] = {NULL}; 
+  char* comandos[MAX_ARGS] = {NULL}; 
   const char espac[2] = " ";
   int pid;
 
@@ -27,7 +28,7 @@ int main() {
     } else {
       // Usar fopen pra redirecionar a entrada e saida padrão antes do exec
       comandos[0] = strtok(comando, espac);
-      for (size_t i = 1; i < 50 && comandos[i-1] != NULL; i++) {
+      for (size_t i = 1; i < MAX_ARGS && comandos[i-1] != NULL; i++) {
         comandos[i] = strtok(NULL, espac);
       }
       
