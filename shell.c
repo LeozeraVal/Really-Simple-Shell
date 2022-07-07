@@ -14,6 +14,7 @@ int main() {
   int pid;
 
   while (1) {
+    int concorrente = 0;
     printf("> ");
     fgets(comando, MAX , stdin);
     comando[strcspn(comando, "\n")] = 0;
@@ -22,16 +23,28 @@ int main() {
       exit(EXIT_SUCCESS);
     }
 
-    //pid = fork();
-    if (0){//pid) {
-      waitpid(pid, NULL, 0); 
-    } else {
-      // Usar fopen pra redirecionar a entrada e saida padrão antes do exec
-      comandos[0] = strtok(comando, espac);
-      for (size_t i = 1; i < MAX_ARGS && comandos[i-1] != NULL; i++) {
-        comandos[i] = strtok(NULL, espac);
+    //Quebra o comando os tokens
+    comandos[0] = strtok(comando, espac);
+    for (size_t i = 1; i < MAX_ARGS && comandos[i-1] != NULL; i++) {
+      if (!strcmp(comandos[i-1], "&")) {
+        concorrente = 1;
+        comandos[i-1] = NULL;
       }
       
+      comandos[i] = strtok(NULL, espac);
+    }
+
+    pid = fork();
+    if (pid) {
+      // Se possui algum &, o processo deve continuar sem esperar o processo filho acabar
+      if (!concorrente) {
+        waitpid(pid, NULL, 0);
+      } else {
+        continue;
+      }
+      
+    } else {
+      // Usar fopen pra redirecionar a entrada e saida padrão antes do exec
       //execlp(comando, comando, NULL);
       execvp(comandos[0], comandos);
       printf("Erro ao executar comando!\n");
