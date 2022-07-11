@@ -12,9 +12,10 @@ int main() {
   char* comandos[MAX_ARGS] = {NULL}; 
   const char espac[2] = " ";
   int pid;
+  int concorrente = 0;
 
   while (1) {
-    int concorrente = 0;
+    concorrente = 0;
     printf("> ");
     fgets(comando, MAX , stdin);
     comando[strcspn(comando, "\n")] = 0;
