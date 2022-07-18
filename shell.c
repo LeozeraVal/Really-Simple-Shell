@@ -18,6 +18,10 @@ int main() {
     concorrente = 0;
     printf("> ");
     fgets(comando, MAX , stdin);
+    if (strcmp(comando, "\n") == 0) {
+      continue;
+    }
+    
     comando[strcspn(comando, "\n")] = 0;
     //scanf("%s", comando);
     if (!strcmp(comando, "exit")) {
