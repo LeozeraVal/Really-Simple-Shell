@@ -13,6 +13,9 @@ int main() {
   const char espac[2] = " ";
   int pid;
   int concorrente = 0;
+  int red_input, red_output = 0;
+  char* input = NULL;
+  char* output = NULL;
 
   while (1) {
     concorrente = 0;
@@ -34,6 +37,22 @@ int main() {
       if (!strcmp(comandos[i-1], "&")) {
         concorrente = 1;
         comandos[i-1] = NULL;
+      } else if (!strcmp(comandos[i-1], "<")) {
+        red_input = 1;
+        comandos[i-1] = NULL;
+        input = strtok(NULL, espac);
+        printf("INPUT = %s\n", input);
+        i--;
+        i--;
+        continue;
+      } else if (!strcmp(comandos[i-1], ">")) {
+        red_output = 1;
+        comandos[i-1] = NULL;
+        output = strtok(NULL, espac);
+        printf("OUTPUT = %s\n", output);
+        i--;
+        i--;
+        continue;
       }
       
       comandos[i] = strtok(NULL, espac);
@@ -50,7 +69,12 @@ int main() {
       
     } else {
       // Usar fopen pra redirecionar a entrada e saida padrão antes do exec
-      //execlp(comando, comando, NULL);
+      if (red_input) {
+        freopen(input, "r+",stdin);
+      }
+      if (red_output) {
+        freopen(output, "w+",stdout);
+      }
       execvp(comandos[0], comandos);
       printf("Erro ao executar comando!\n");
       exit(EXIT_FAILURE);
